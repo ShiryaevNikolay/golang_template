@@ -1,5 +1,5 @@
 # Имя нашего pipline
-name: CI
+name: CI/CD
 
 # Прописываем, когда он выполнятеся
 on: 
@@ -25,3 +25,29 @@ jobs:
       # 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v2
+
+  deploy:
+    name: Deploy on Heroku
+    runs-on: ubuntu-latest
+    # Указываем, что обязательно должен выполниться lint
+    needs: 
+      - lint
+    steps:
+      - uses: actions/checkout@v2
+      # Шаг: залогиниться в сервисе Heroku Container registry
+      - name: Login to Heroku Container registry
+        # Добавляем в окружение данные из секретов
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:Login
+      # Шаг: build и push
+      - name: Build and push
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        # Пушим контейнер registry
+        run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+      # Шаг: релизит контейнер registry
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web

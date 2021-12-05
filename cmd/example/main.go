@@ -1,7 +1,7 @@
 package main
 
 // Принято группировать импорты
-// 
+//
 // 1. Стандартные импорты
 // 2. Внешние импорты
 // 3. Пути внутри проекта
@@ -10,11 +10,22 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/ilyakaznacheev/cleanenv"
 
+	"example/internal/config"
 	"example/internal/handler"
 )
 
 func main() {
+	cfg := config.Server{} // создание структуры Server из config.go
+	
+	// Считываем файл config.yml
+	// И по тегам, которые описываются в config.go в структуре Server
+	// считываем конфиг
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	h :=  handler.NewHandler() // handler, который будет слушать запросы
 
@@ -29,7 +40,7 @@ func main() {
 	r.Get("/hello", h.Hello)
 
 	log.Print("starting server")
-	err := http.ListenAndServe(":8080", r) // Возвращает ошибку
+	err = http.ListenAndServe(":8080", r) // Возвращает ошибку
 	log.Fatal(err)
 	log.Print("shutting server down")
 }
