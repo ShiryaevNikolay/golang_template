@@ -20,7 +20,7 @@ jobs:
     steps:
       # Это стандартный экшен гитаба, который берет наш репозиторий
       # и клонирует его в локальную папку нашего pipline
-      - uses: actioncs/checkout@v2
+      - uses: actions/checkout@v2
       # 
       - name: Run golangci-lint
-        uses: actioncs/contrib/golangci-lint@v1
+        uses: actions-contrib/golangci-lint@v1
