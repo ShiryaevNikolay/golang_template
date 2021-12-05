@@ -1,0 +1,26 @@
+# Имя нашего pipline
+name: CI
+
+# Прописываем, когда он выполнятеся
+on: 
+  # т.е. будет выпоняться при пуше
+  push:
+    # ... в ветку main
+    branches:
+      - main
+
+# Описывает, какие будут выполняться действия
+jobs:
+  lint:
+    # Имя, которое будет видно нам
+    name: Run linter
+    # Описывает, на каком дистрибутиве он будет выполняться в pipline
+    runs-on: ubuntu:latest
+    # Описывает шаги, какие нужно выполнить
+    steps:
+      # Это стандартный экшен гитаба, который берет наш репозиторий
+      # и клонирует его в локальную папку нашего pipline
+      - uses: actioncs/checkout@v2
+      # 
+      - name: Run golangci-lint
+        uses: actioncs/contrib/golangci-lint@v1
