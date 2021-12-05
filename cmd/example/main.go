@@ -28,7 +28,8 @@ func main() {
 	// которая находится в файле handler.go
 	r.Get("/hello", h.Hello)
 
-
+	log.Print("starting server")
 	err := http.ListenAndServe(":8080", r) // Возвращает ошибку
 	log.Fatal(err)
+	log.Print("shutting server down")
 }
