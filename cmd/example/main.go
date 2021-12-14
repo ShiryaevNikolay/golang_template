@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/ilyakaznacheev/cleanenv"
 
+	"example/internal/api/jokes"
 	"example/internal/config"
 	"example/internal/handler"
 )
@@ -26,6 +27,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	apiClient := jokes.NewJokeClient(cfg.JokeUrl)
 
 	h :=  handler.NewHandler() // handler, который будет слушать запросы
 

@@ -14,6 +14,15 @@ type JokeClient struct {
 	url string
 }
 
+// Функция, которая создает JokeClient (аналог конструктора)
+// возвращает *JokeClint в виде указателя
+func NewJokeClient(baseUrl string) *JokeClient {
+	return &JokeClient{
+		url: baseUrl,
+	}
+}
+
+// jc - ресивер метода и получает инстанцию структуры JokeClient
 func (jc *JokeClient) GetJoke() (*api.JokeResponse, error) {
 	urlPath := jc.url + getJokePath
 
@@ -21,7 +30,7 @@ func (jc *JokeClient) GetJoke() (*api.JokeResponse, error) {
 	if err != nil { // Если произошла техническая ошибка
 		return nil, err
 	} else if resp.StatusCode != http.StatusOK { // Если статус код респонса != 200 (StatusOK)
-		return nil, fmt.Errorf("API request error: %v", err)
+		return nil, fmt.Errorf("API request status: %s", http.StatusText(resp.StatusCode))
 	}
 
 	var data api.JokeResponse
