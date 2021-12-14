@@ -21,7 +21,7 @@ func (jc *JokeClient) GetJoke() (*api.JokeResponse, error) {
 	if err != nil { // Если произошла техническая ошибка
 		return nil, err
 	} else if resp.StatusCode != http.StatusOK { // Если статус код респонса != 200 (StatusOK)
-		return nil, fmt.ErrorF("API request error: %v", err)
+		return nil, fmt.Errorf("API request error: %v", err)
 	}
 
 	var data api.JokeResponse
@@ -33,5 +33,5 @@ func (jc *JokeClient) GetJoke() (*api.JokeResponse, error) {
 		return nil, err
 	}
 
-	return *data, nil
+	return &data, nil
 }
