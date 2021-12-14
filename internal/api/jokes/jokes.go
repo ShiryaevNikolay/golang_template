@@ -1,9 +1,10 @@
 package jokes
 
 import (
+	"fmt"
+	"net/http"
 	"encoding/json"
 	"example/internal/api"
-	"net/http"
 )
 
 const getJokePath = "/api?format=json"
