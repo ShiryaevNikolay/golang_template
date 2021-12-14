@@ -30,7 +30,7 @@ func main() {
 
 	apiClient := jokes.NewJokeClient(cfg.JokeUrl)
 
-	h :=  handler.NewHandler() // handler, который будет слушать запросы
+	h :=  handler.NewHandler(apiClient) // handler, который будет слушать запросы
 
 	r := chi.NewRouter() // Создается роутер. Он обрабатывает запросы (GET, POST, DELETE...)
 
