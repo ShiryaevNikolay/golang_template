@@ -1,12 +1,14 @@
-package handler
+package handler_test
 
 import (
-	"example/internal/api"
-	"example/internal/api/mocks"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"example/internal/api"
+	"example/internal/api/mocks"
+	"example/internal/handler"
 )
 
 func TestHandler_Hello(t *testing.T) {
@@ -30,7 +32,7 @@ func TestHandler_Hello(t *testing.T) {
 			apiMock := &mocks.Client{}
 			apiMock.On("GetJoke").Return(tt.joke, tt.err) // При вызове метода GetJoke вернет joke и err
 
-			h := NewHandler(apiMock)
+			h := handler.NewHandler(apiMock)
 
 			req, _ := http.NewRequest("GET", "/hello", nil) // Создаем новый http request
 			rr := httptest.NewRecorder()                    // создаем response recorder
