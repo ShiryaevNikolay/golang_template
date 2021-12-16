@@ -2,31 +2,54 @@ package handler
 
 import (
 	"example/internal/api"
+	"example/internal/api/mocks"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 func TestHandler_Hello(t *testing.T) {
-	type fields struct {
-		jokeClient api.Client
-	}
-	type args struct {
-		w http.ResponseWriter
-		r *http.Request
-	}
 	tests := []struct {
-		name string
-		fields    *Handler
-		args args
+		name     string
+		joke     *api.JokeResponse
+		err      error
+		codeWant int
+		bodyWant string
 	}{
-		// TODO: Add test cases.
+		{
+			name:     "simple test",
+			joke:     &api.JokeResponse{Joke: "test joke"},
+			err:      nil,
+			codeWant: 200,
+			bodyWant: "test joke",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h := &Handler{
-				jokeClient: tt.fields.jokeClient,
+			apiMock := &mocks.Client{}
+			apiMock.On("GetJoke").Return(tt.joke, tt.err) // При вызове метода GetJoke вернет joke и err
+
+			h := NewHandler(apiMock)
+
+			req, _ := http.NewRequest("GET", "/hello", nil) // Создаем новый http request
+			rr := httptest.NewRecorder()                    // создаем response recorder
+
+			// Альтернатива:
+			// handler := http.HandlerFunc(h.Hello)
+			// handler.ServeHTTP(rr, req) // обрабатывает запрос req и кладет в rr
+			h.Hello(rr, req)
+
+			gotRaw, _ := ioutil.ReadAll(rr.Body)
+			got := string(gotRaw)
+
+			if got != tt.bodyWant {
+				t.Errorf("wrong response body %s want %s", got, tt.bodyWant)
 			}
-			h.Hello(tt.args.w, tt.args.r)
+
+			if status := rr.Result().StatusCode; status != tt.codeWant {
+				t.Errorf("wrong response status %d want %d", status, tt.codeWant)
+			}
 		})
 	}
 }
